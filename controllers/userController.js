@@ -63,14 +63,14 @@ exports.createExpense = (req,res,next) => {
        throw error
     }
     const amount       = req.body.amount;
-    const note         = req.body.note;
+    const description         = req.body.description;
     const date         = req.body.date;
     const expenseCategory  = req.body.category;
     const expesnseFrom      = req.body.form;
    
     userExpenses.create({
             amount:amount,
-            note:note,
+            description:description,
             date:date,
             UserId:req.userId,
             expenseCategory:expenseCategory,
@@ -101,9 +101,8 @@ exports.getAllExpenses=(req,res,next)=>{
        throw error
     }
     const userId            = req.userId;
-    console.log(userId)
     userExpenses.findAll({
-        attributes: ['amount','note','expenseCategory','expesnseFrom','date'],
+        attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
         where:{userId:userId}
     })
     .then(expenses=>{
@@ -120,4 +119,69 @@ exports.getAllExpenses=(req,res,next)=>{
     
  }
 
+exports.updateExpense=(req,res,next)=>{
+     const expenseid = req.params.expenseid
+     const errors = validationResult(req);
+     if(!errors.isEmpty()){
+        const error = new Error('validation Failed');
+        error.statusCode = 422;
+        error.data = errors.array();
+        throw error
+     }
+     const amount       = req.body.amount;
+     const description         = req.body.description;
+     const date         = req.body.date;
+     const expenseCategory  = req.body.category;
+     const expesnseFrom      = req.body.form;
 
+     userExpenses.findByPk(expenseid)
+        .then(expenseId=>{
+            if(!expenseId){
+            const error = new Error('Could not find Expense');
+            error.statusCode = 404;
+            throw error;
+        }
+     return userExpenses.update({
+            amount: amount,
+            description : description,
+            date : date,
+            expenseCategory:expenseCategory,
+            expesnseFrom:expesnseFrom
+          },{ where: { id : expenseid } })
+          .then(() => {
+            res
+            .status(200)
+            .json({message:"expense Updated"})  
+          }) 
+        })
+        .catch(err=>{
+            if(!err.statusCode){
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+}
+ 
+exports.deleteExpense=(req,res,next)=>{
+    const expenseid = req.params.expenseid
+    userExpenses.findByPk(expenseid)
+    .then(expense=>{
+        if(!expense){
+            const error = new Error('Could not find Expense');
+            error.statusCode = 404;
+            throw error;
+        }
+        return userExpenses.destroy({ where: { id : expenseid } })
+        .then(() => {
+            res
+            .status(200)
+            .json({message:"expense Deleted"})  
+          }) 
+    })
+    .catch(err=>{
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    })
+}

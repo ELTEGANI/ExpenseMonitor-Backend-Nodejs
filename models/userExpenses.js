@@ -12,7 +12,7 @@ amount: {
   type: Sequelize.STRING,
   allowNull: false
 },
-note: {
+description: {
     type: Sequelize.STRING,
     allowNull: false
 },

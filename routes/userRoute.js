@@ -13,7 +13,7 @@ router.post('/registeruser',[
 
 router.post('/createexpense',isAuth,[
         body('amount').trim().not().isEmpty(),
-        body('note').trim(),
+        body('description').trim().not().isEmpty(),
         body('date').trim().not().isEmpty(),
         body('category').trim().not().isEmpty(),
         body('form').trim().not().isEmpty()   
@@ -21,5 +21,15 @@ router.post('/createexpense',isAuth,[
 
 
 router.get('/retreiveallexpense',isAuth,userController.getAllExpenses)
-       
+      
+router.put('/updateexpense/:expenseid',isAuth,[
+        body('amount').trim().not().isEmpty(),
+        body('description').trim().not().isEmpty(),
+        body('date').trim().not().isEmpty(),
+        body('category').trim().not().isEmpty(),
+        body('form').trim().not().isEmpty()   
+       ],userController.updateExpense)
+
+router.delete('/deleteexpense/:expenseid',isAuth,userController.deleteExpense)
+
 module.exports = router;
