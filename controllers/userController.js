@@ -3,7 +3,6 @@ const Users = require('../models/users');
 const userExpenses = require('../models/userExpenses');
 const jwt = require('jsonwebtoken');
 
-
 exports.signUpUser = (req,res,next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -16,12 +15,14 @@ exports.signUpUser = (req,res,next) => {
     const emailaddress   = req.body.emailaddress;
     const gender         = req.body.gender;
     let currentExpense = null
-    
+    let today = new Date();
+    let currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
     Users.findOne({where:{emailaddress:emailaddress}})
       .then(user=>{
-         if(user){
+         if(user){  
             userExpenses
-            .sum('amount', { where: { UserId:user.id,date:'2019-12-03'} })
+            .sum('amount', { where: { UserId:user.id,date:currentDate} })
             .then(amountsum=>{
                 if(amountsum){
                     currentExpense = amountsum
