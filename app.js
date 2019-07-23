@@ -41,8 +41,8 @@ Users.hasMany(userExpenses);
 
 
 sequelize
-       //.sync({force:true})
-      .sync()       
+       .sync({force:true})
+      //.sync()       
       .then(result =>{   
       console.log(result);  
       app.listen(3000); 

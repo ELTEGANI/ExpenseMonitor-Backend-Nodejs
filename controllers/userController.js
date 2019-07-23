@@ -15,23 +15,59 @@ exports.signUpUser = (req,res,next) => {
     const username       = req.body.username;
     const emailaddress   = req.body.emailaddress;
     const gender         = req.body.gender;
-
+    let currentExpense = null
+    
     Users.findOne({where:{emailaddress:emailaddress}})
       .then(user=>{
          if(user){
-            const token = jwt.sign({userId:user.id},'expensemon');
-            res.status(200).json({accesstoken:token,userid:user.id})
+            userExpenses
+            .sum('amount', { where: { UserId:user.id,date:'2019-12-03'} })
+            .then(amountsum=>{
+                if(amountsum){
+                    currentExpense = amountsum
+                }else{
+                    currentExpense = 0.0
+                }
+                const token = jwt.sign({userId:user.id},'expensemon');
+                res
+                .status(200)
+                .json({
+                    accesstoken:token,
+                    userCurrentExpense:currentExpense
+                })
+            }).catch( err =>{
+                if(!err.statusCode){
+                    err.statusCode = 500;
+                }
+                next(err);
+             }) 
          }else{
         Users.create({
             username:username,
             emailaddress:emailaddress,
             gender:gender
             }).then(result =>{
-            const token = jwt.sign({userId:result.id},'expensemon');
-            res.status(201).json({
-            accesstoken:token,
-            userid:userId
-         });
+                userExpenses
+                .sum('amount', { where: { id:result.id,date:'2019-12-03'} })
+                .then(amountsum=>{
+                    if(amountsum){
+                        currentExpense = amountsum
+                    }else{
+                        currentExpense = 0.0
+                    }
+                    const token = jwt.sign({id:user.id},'expensemon');
+                    res
+                    .status(200)
+                    .json({
+                        accesstoken:token,
+                        userCurrentExpense:currentExpense
+                    })
+                }).catch( err =>{
+                    if(!err.statusCode){
+                        err.statusCode = 500;
+                    }
+                    next(err);
+                 }) 
          })
         .catch(
             err =>{
