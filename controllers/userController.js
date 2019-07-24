@@ -2,6 +2,9 @@ const {validationResult} = require('express-validator/check');
 const Users = require('../models/users');
 const userExpenses = require('../models/userExpenses');
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize')
+const moment = require('moment');
+
 
 exports.signUpUser = (req,res,next) => {
     const errors = validationResult(req);
@@ -27,14 +30,15 @@ exports.signUpUser = (req,res,next) => {
                 if(amountsum){
                     currentExpense = amountsum
                 }else{
-                    currentExpense = 0.0
+                    currentExpense = 0
                 }
                 const token = jwt.sign({userId:user.id},'expensemon');
                 res
                 .status(200)
                 .json({
                     accesstoken:token,
-                    userCurrentExpense:currentExpense
+                    userCurrentExpense:currentExpense,
+                    date:moment().subtract(7,'days').format('YYYY-MM-DD')
                 })
             }).catch( err =>{
                 if(!err.statusCode){
@@ -43,18 +47,20 @@ exports.signUpUser = (req,res,next) => {
                 next(err);
              }) 
          }else{
+            let today = new Date();
+            let currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();             
         Users.create({
             username:username,
             emailaddress:emailaddress,
             gender:gender
             }).then(result =>{
                 userExpenses
-                .sum('amount', { where: { id:result.id,date:'2019-12-03'} })
+                .sum('amount', { where: { id:result.id,date:currentDate} })
                 .then(amountsum=>{
                     if(amountsum){
                         currentExpense = amountsum
                     }else{
-                        currentExpense = 0.0
+                        currentExpense = 0
                     }
                     const token = jwt.sign({id:user.id},'expensemon');
                     res
@@ -143,7 +149,7 @@ exports.getAllExpenses=(req,res,next)=>{
         where:{userId:userId}
     })
     .then(expenses=>{
-        res.status(201).json({
+        res.status(200).json({
             message:'My Expenses',
             myExpenses:expenses,
       });
@@ -221,4 +227,61 @@ exports.deleteExpense=(req,res,next)=>{
         }
         next(err);
     })
+}
+
+exports.getExpensesBasedOnDuration=(req,res,next)=>{
+     const duration = req.params.duration
+     const today = new Date();
+     const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+ 
+     switch(duration){
+         case "daily":
+         const errors = validationResult(req);
+         if(!errors.isEmpty()){
+            const error = new Error('validation Failed');
+            error.statusCode = 422;
+            error.data = errors.array();
+            throw error
+         }
+         userExpenses.findAll({
+             attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
+             where:{userId:req.userId,date:currentDate}
+         })
+         .then(expenses=>{
+             res.status(200).json({
+                 message:'My Daily Expenses',
+                 myDailyExpenses:expenses,
+           });
+         }).catch(err=>{
+             if(!err.statusCode){
+                 err.statusCode = 500;
+             }
+             next(err);
+         })     
+         break
+
+         case "weekly":
+         userExpenses.findAll({
+             attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
+             where:{userId:req.userId,date:{
+                [Op.gte]:moment().subtract(7,'days').format('YYYY-MM-DD')
+              }     
+            }
+         })  
+         .then(expenses=>{
+             res.status(200).json({
+                 message:'My Daily Expenses',
+                 myWeeklyExpenses:expenses,
+           });
+         }).catch(err=>{
+             if(!err.statusCode){
+                 err.statusCode = 500;
+             }
+             next(err);
+         })    
+         break
+
+         case "monthly":
+         break
+     }
 }

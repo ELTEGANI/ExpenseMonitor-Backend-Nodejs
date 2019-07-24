@@ -39,7 +39,7 @@ app.use((error,req,res,next)=>{
 userExpenses.belongsTo(Users);
 Users.hasMany(userExpenses);
 
-
+ 
 sequelize
        //.sync({force:true})
        .sync()       
