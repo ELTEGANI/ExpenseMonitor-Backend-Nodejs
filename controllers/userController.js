@@ -37,8 +37,7 @@ exports.signUpUser = (req,res,next) => {
                 .status(200)
                 .json({
                     accesstoken:token,
-                    userCurrentExpense:currentExpense,
-                    date:moment().subtract(7,'days').format('YYYY-MM-DD')
+                    userCurrentExpense:currentExpense
                 })
             }).catch( err =>{
                 if(!err.statusCode){
@@ -282,6 +281,24 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
          break
 
          case "monthly":
+         userExpenses.findAll({
+            attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
+            where:{userId:req.userId,date:{
+               [Op.gte]:moment().subtract(30,'days').format('YYYY-MM-DD')
+             }     
+           }
+        })  
+        .then(expenses=>{
+            res.status(200).json({
+                message:'My Monthly Expenses',
+                myMonthlyExpenses:expenses,
+          });
+        }).catch(err=>{
+            if(!err.statusCode){
+                err.statusCode = 500;
+            }
+            next(err);
+        })
          break
      }
 }
