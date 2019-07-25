@@ -134,33 +134,6 @@ exports.createExpense = (req,res,next) => {
 }
 
 
-exports.getAllExpenses=(req,res,next)=>{
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-       const error = new Error('validation Failed');
-       error.statusCode = 422;
-       error.data = errors.array();
-       throw error
-    }
-    const userId            = req.userId;
-    userExpenses.findAll({
-        attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
-        where:{userId:userId}
-    })
-    .then(expenses=>{
-        res.status(200).json({
-            message:'My Expenses',
-            myExpenses:expenses,
-      });
-    }).catch(err=>{
-        if(!err.statusCode){
-            err.statusCode = 500;
-        }
-        next(err);
-    })
-    
- }
-
 exports.updateExpense=(req,res,next)=>{
      const expenseid = req.params.expenseid
      const errors = validationResult(req);

@@ -20,7 +20,6 @@ router.post('/createexpense',isAuth,[
        ],userController.createExpense);
 
 
-router.get('/retreiveallexpense',isAuth,userController.getAllExpenses)
       
 router.put('/updateexpense/:expenseid',isAuth,[
         body('amount').trim().not().isEmpty(),
