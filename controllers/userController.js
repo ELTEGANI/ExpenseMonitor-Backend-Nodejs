@@ -109,7 +109,9 @@ exports.createExpense = (req,res,next) => {
     const date         = req.body.date;
     const expenseCategory  = req.body.category;
     const expesnseFrom      = req.body.form;
-   
+    let today = new Date();
+    let currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
     userExpenses.create({
             amount:amount,
             description:description,
@@ -118,10 +120,20 @@ exports.createExpense = (req,res,next) => {
             expenseCategory:expenseCategory,
             expesnseFrom:expesnseFrom
             }).then(result =>{
-            res.status(201).json({
-             message:'Expense Created Successfully',
-             Expense:result
-         });
+                userExpenses
+                .sum('amount', { where: { UserId:result.UserId,date:currentDate} })
+                .then(amount=>{
+                    res.status(201).json({
+                        message:'Expense Created Successfully',
+                        Expense:amount
+                    });
+                }) .catch(
+                    err =>{
+                        if(!err.statusCode){
+                            err.statusCode = 500;
+                        }
+                     }
+                ) 
          })
         .catch(
             err =>{
