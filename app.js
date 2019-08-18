@@ -40,7 +40,7 @@ userExpenses.belongsTo(Users);
 Users.hasMany(userExpenses);
 
  
-sequelize
+sequelize  
        //.sync({force:true})
        .sync()       
       .then(result =>{   

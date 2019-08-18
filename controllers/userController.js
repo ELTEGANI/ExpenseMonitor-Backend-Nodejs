@@ -108,7 +108,6 @@ exports.createExpense = (req,res,next) => {
     const description         = req.body.description;
     const date         = req.body.date;
     const expenseCategory  = req.body.category;
-    const expesnseFrom      = req.body.form;
     let today = new Date();
     let currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 
@@ -117,8 +116,7 @@ exports.createExpense = (req,res,next) => {
             description:description,
             date:date,
             UserId:req.userId,
-            expenseCategory:expenseCategory,
-            expesnseFrom:expesnseFrom
+            expenseCategory:expenseCategory
             }).then(result =>{
                 userExpenses
                 .sum('amount', { where: { UserId:result.UserId,date:currentDate} })
@@ -159,7 +157,6 @@ exports.updateExpense=(req,res,next)=>{
      const description         = req.body.description;
      const date         = req.body.date;
      const expenseCategory  = req.body.category;
-     const expesnseFrom      = req.body.form;
 
      userExpenses.findByPk(expenseid)
         .then(expenseId=>{
@@ -172,9 +169,8 @@ exports.updateExpense=(req,res,next)=>{
             amount: amount,
             description : description,
             date : date,
-            expenseCategory:expenseCategory,
-            expesnseFrom:expesnseFrom
-          },{ where: { id : expenseid } })
+            expenseCategory:expenseCategory
+        },{ where: { id : expenseid } })
           .then(() => {
             res
             .status(200)
@@ -228,7 +224,7 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
             throw error
          }
          userExpenses.findAll({
-             attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
+             attributes: ['id','amount','description','expenseCategory','date'],
              where:{userId:req.userId,date:currentDate}
          })
          .then(expenses=>{
@@ -246,7 +242,7 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
 
          case "weekly":
          userExpenses.findAll({
-             attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
+             attributes: ['id','amount','description','expenseCategory','date'],
              where:{userId:req.userId,date:{
                 [Op.gte]:moment().subtract(7,'days').format('YYYY-MM-DD')
               }     
@@ -267,7 +263,7 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
 
          case "monthly":
          userExpenses.findAll({
-            attributes: ['id','amount','description','expenseCategory','expesnseFrom','date'],
+            attributes: ['id','amount','description','expenseCategory','date'],
             where:{userId:req.userId,date:{
                [Op.gte]:moment().subtract(30,'days').format('YYYY-MM-DD')
              }     

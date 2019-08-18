@@ -15,8 +15,7 @@ router.post('/createexpense',isAuth,[
         body('amount').trim().not().isEmpty(),
         body('description').trim().not().isEmpty(),
         body('date').trim().not().isEmpty(),
-        body('category').trim().not().isEmpty(),
-        body('form').trim().not().isEmpty()   
+        body('category').trim().not().isEmpty()
        ],userController.createExpense);
 
 
@@ -25,8 +24,7 @@ router.put('/updateexpense/:expenseid',isAuth,[
         body('amount').trim().not().isEmpty(),
         body('description').trim().not().isEmpty(),
         body('date').trim().not().isEmpty(),
-        body('category').trim().not().isEmpty(),
-        body('form').trim().not().isEmpty()   
+        body('category').trim().not().isEmpty()
        ],userController.updateExpense)
 
 router.delete('/deleteexpense/:expenseid',isAuth,userController.deleteExpense)
