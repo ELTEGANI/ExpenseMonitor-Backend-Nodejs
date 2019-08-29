@@ -29,5 +29,8 @@ router.put('/updateexpense/:expenseid',isAuth,[
 
 router.delete('/deleteexpense/:expenseid',isAuth,userController.deleteExpense)
 
-router.get('/getExpensesBasedOnDuration/:duration',isAuth,userController.getExpensesBasedOnDuration)
+router.post('/getExpensesBasedOnDuration',isAuth,[
+         body('duration').trim().not().isEmpty()
+]
+,userController.getExpensesBasedOnDuration)
 module.exports = router;

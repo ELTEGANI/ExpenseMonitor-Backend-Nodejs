@@ -210,12 +210,12 @@ exports.deleteExpense=(req,res,next)=>{
 }
 
 exports.getExpensesBasedOnDuration=(req,res,next)=>{
-     const duration = req.params.duration
+     const duration = req.body.duration
      const today = new Date();
      const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
  
      switch(duration){
-         case "daily":
+         case "today":
          const errors = validationResult(req);
          if(!errors.isEmpty()){
             const error = new Error('validation Failed');
@@ -228,10 +228,7 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
              where:{userId:req.userId,date:currentDate}
          })
          .then(expenses=>{
-             res.status(200).json({
-                 message:'My Daily Expenses',
-                 myDailyExpenses:expenses,
-           });
+             res.status(200).json(expenses);
          }).catch(err=>{
              if(!err.statusCode){
                  err.statusCode = 500;
