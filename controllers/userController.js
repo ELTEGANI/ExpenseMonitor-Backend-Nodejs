@@ -237,19 +237,13 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
          })     
          break
 
-         case "weekly":
+         case "week":
          userExpenses.findAll({
-             attributes: ['id','amount','description','expenseCategory','date'],
-             where:{userId:req.userId,date:{
-                [Op.gte]:moment().subtract(7,'days').format('YYYY-MM-DD')
-              }     
-            }
+             attributes: ['id','amount','description','expenseCategory','date'],  
+             where:{userId:req.userId,date:{[Op.between]:[currentDate,moment().add(7,'days').format('YYYY-MM-DD')]}}
          })  
          .then(expenses=>{
-             res.status(200).json({
-                 message:'My Daily Expenses',
-                 myWeeklyExpenses:expenses,
-           });
+             res.status(200).json(expenses);
          }).catch(err=>{
              if(!err.statusCode){
                  err.statusCode = 500;
@@ -258,19 +252,14 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
          })    
          break
 
-         case "monthly":
+         case "month":
          userExpenses.findAll({
             attributes: ['id','amount','description','expenseCategory','date'],
-            where:{userId:req.userId,date:{
-               [Op.gte]:moment().subtract(30,'days').format('YYYY-MM-DD')
-             }     
+            where:{userId:req.userId,date:{[Op.between]:[currentDate,moment().add(30,'days').format('YYYY-MM-DD')]}
            }
         })  
         .then(expenses=>{
-            res.status(200).json({
-                message:'My Monthly Expenses',
-                myMonthlyExpenses:expenses,
-          });
+            res.status(200).json(expenses);
         }).catch(err=>{
             if(!err.statusCode){
                 err.statusCode = 500;
