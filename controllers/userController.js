@@ -18,14 +18,48 @@ exports.signUpUser = (req,res,next) => {
     const emailaddress   = req.body.emailaddress;
     const gender         = req.body.gender;
     let currentExpense = null
+    let weekExpense = null
+    let monthExpense = null
     let today = new Date();
     let currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 
     Users.findOne({where:{emailaddress:emailaddress}})
       .then(user=>{
-         if(user){  
-            userExpenses
-            .sum('amount', { where: { UserId:user.id,date:currentDate} })
+         if(user){
+            userExpenses.sum('amount', { where: { 
+                date:{[Op.between]:[currentDate,moment().add(7,'days').format('YYYY-MM-DD')]}
+             } })
+             .then(sumationOfWeekExpense => {
+                if(sumationOfWeekExpense){
+                    weekExpense = sumationOfWeekExpense
+                }else{
+                    weekExpense = 0
+                }
+              }).catch(err =>{
+                if(!err.statusCode){
+                    err.statusCode = 500;
+                }
+                next(err);
+             })
+    //////////////////////////////////////////////////////////////////////////////////
+             userExpenses.sum('amount', { where: {  
+                date:{[Op.between]:[currentDate,moment().add(30,'days').format('YYYY-MM-DD')]}
+             } })
+             .then(sumationOfMonthExpense => {
+                if(sumationOfMonthExpense){
+                    monthExpense = sumationOfMonthExpense
+                }else{
+                    monthExpense = 0
+                }
+              }).catch(err =>{
+                if(!err.statusCode){
+                    err.statusCode = 500;
+                }
+                next(err);
+             })
+    //////////////////////////////////////////////////////////////////////////////////            
+             userExpenses
+            .sum('amount',{where:{UserId:user.id,date:currentDate}})
             .then(amountsum=>{
                 if(amountsum){
                     currentExpense = amountsum
@@ -37,7 +71,9 @@ exports.signUpUser = (req,res,next) => {
                 .status(200)
                 .json({
                     accesstoken:token,
-                    userCurrentExpense:currentExpense
+                    userCurrentExpense:currentExpense,
+                    weekExpense:weekExpense,
+                    monthExpense:monthExpense
                 })
             }).catch( err =>{
                 if(!err.statusCode){
@@ -90,8 +126,6 @@ exports.signUpUser = (req,res,next) => {
         }
         next(err);
        })
-
-   
 }
 
 
@@ -153,9 +187,9 @@ exports.updateExpense=(req,res,next)=>{
         error.data = errors.array();
         throw error
      }
-     const amount       = req.body.amount;
-     const description         = req.body.description;
-     const date         = req.body.date;
+     const amount           = req.body.amount;
+     const description      = req.body.description;
+     const date             = req.body.date;
      const expenseCategory  = req.body.category;
 
      userExpenses.findByPk(expenseid)
@@ -268,4 +302,7 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
         })
          break
      }
-}
+
+
+     
+}     
