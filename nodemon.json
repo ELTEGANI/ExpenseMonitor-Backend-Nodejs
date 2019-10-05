@@ -1,8 +1,8 @@
 {
     "env":{
         "DATABASE_NAME":"ExpenseMonitor",
-        "DATABASE_USER":"root",
-        "DATABASE_PASSWORD":"AdminAdminAdmin_123",
+        "DATABASE_USER":"bcad975c052791",
+        "DATABASE_PASSWORD":"afca8e42",
         "SECURITY_KEY":"expensemon"
     }
 }
