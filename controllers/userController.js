@@ -66,7 +66,7 @@ exports.signUpUser = (req,res,next) => {
                 }else{
                     currentExpense = 0
                 }
-                const token = jwt.sign({userId:user.id},'expensemon');
+                const token = jwt.sign({userId:user.id},process.env.SECURITY_KEY);
                 res
                 .status(200)
                 .json({
@@ -97,7 +97,7 @@ exports.signUpUser = (req,res,next) => {
                     }else{
                         currentExpense = 0
                     }
-                    const token = jwt.sign({id:user.id},'expensemon');
+                    const token = jwt.sign({id:user.id},process.env.SECURITY_KEY);
                     res
                     .status(200)
                     .json({

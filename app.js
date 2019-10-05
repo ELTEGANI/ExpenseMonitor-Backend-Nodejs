@@ -3,12 +3,14 @@ const sequelize  = require('./config/configration');
 const bodyParser = require('body-parser');
 const Users = require('./models/users');
 const userExpenses = require('./models/userExpenses');
+const helmet = require('helmet')
 
 //set routes
 const userRoute = require('./routes/userRoute');
 
 //init express
 const app = express()
+app.use(helmet())
 
 app.use(bodyParser.json());//application/json
    
@@ -41,11 +43,10 @@ Users.hasMany(userExpenses);
 
  
 sequelize  
-       //.sync({force:true})
        .sync()       
       .then(result =>{   
       console.log(result);  
-      app.listen(3000); 
+      app.listen(process.env.PORT || 3000); 
 }).catch(err =>{
       console.log(err)
 })   
