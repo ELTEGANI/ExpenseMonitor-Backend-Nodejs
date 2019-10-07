@@ -4,7 +4,7 @@ const sequelize = new Sequelize(`${process.env.DATABASE_NAME}`,`${process.env.DA
 `${process.env.DATABASE_PASSWORD}`, { 
     // operatorsAliases: false ,
     dialect: 'mysql',
-    host:'localhost'
+    host:'eu-cdbr-west-02.cleardb.net/heroku_8c5f8d5377ca51a?reconnect=true'
 
 });
     
