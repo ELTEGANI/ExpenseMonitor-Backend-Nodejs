@@ -1,6 +1,6 @@
 const express = require('express');
 const {body} = require('express-validator/check');
-const userController = require('../controllers/userController');
+const expenseController = require('../controllers/expenseController');
 const router = express.Router();
 const isAuth = require('../authenticationMiddleware/middleware');
 
@@ -11,7 +11,7 @@ router.post('/createexpense',isAuth,[
         body('date').trim().not().isEmpty(),
         body('currency').trim().not().isEmpty(), 
         body('category').trim().not().isEmpty()
-       ],userController.createExpense);
+       ],expenseController.createExpense);
 
 
 router.put('/updateexpense/:expenseid',isAuth,[
@@ -20,16 +20,16 @@ router.put('/updateexpense/:expenseid',isAuth,[
         body('date').trim().not().isEmpty(),
         body('currency').trim().not().isEmpty(), 
         body('category').trim().not().isEmpty()
-       ],userController.updateExpense)
+       ],expenseController.updateExpense)
 
-router.delete('/deleteexpense/:expenseid',isAuth,userController.deleteExpense)
+router.delete('/deleteexpense/:expenseid',isAuth,expenseController.deleteExpense)
 
 router.post('/getExpensesBasedOnDuration',isAuth,[
          body('duration').trim(),
          body('startDate').trim(),
          body('endDate').trim()
 ]
-,userController.getExpensesBasedOnDuration)
+,expenseController.getExpensesBasedOnDuration)
 
 
 

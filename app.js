@@ -38,10 +38,12 @@ app.use((error,req,res,next)=>{
     });           
 })
 
-app.listen(process.env.PORT || 5000,() => {
+const server = app.listen(process.env.PORT || 5000,() => {
     console.log(`Server is Listening To Port ${process.env.PORT}`)
 })
 
+module.exports = server
    
 
 
+ 
