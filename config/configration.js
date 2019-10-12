@@ -1,9 +1,8 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize(`${process.env.DATABASE_NAME}`,`${process.env.DATABASE_USER}`,
-`${process.env.DATABASE_PASSWORD}`, { 
+const sequelize = new Sequelize('ExpenseMonitor','root','MySqlAdminAdminAdmin_123',{ 
     dialect: 'mysql',
-    host:'localhost'
+    host:'http://104.207.131.106'
 
 });
     

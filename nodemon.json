@@ -1,8 +1,0 @@
-{
-    "env":{
-        "DATABASE_NAME":"ExpenseMonitor",
-        "DATABASE_USER":"root",
-        "DATABASE_PASSWORD":"MySqlAdminAdminAdmin_123",
-        "SECURITY_KEY":"expensemon"
-    }
-}
