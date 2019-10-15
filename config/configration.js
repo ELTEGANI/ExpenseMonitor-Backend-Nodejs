@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
     
-//online server
+//online server config
 const sequelize = new Sequelize('ExpenseMonitor','root','MySqlAdminAdminAdmin_123',{ 
     dialect: 'mysql',
     host:'localhost'
