@@ -17,6 +17,11 @@ exports.signUpUser = (req,res,next) => {
     const username       = req.body.username;
     const emailaddress   = req.body.emailaddress;
     const gender         = req.body.gender;
+    const startWeek         = req.body.startWeek;
+    const endWeek         = req.body.endWeek;
+    const startMonth         = req.body.startMonth;
+    const endMonth         = req.body.endMonth;
+
     let currentExpense = null
     let weekExpense = null
     let monthExpense = null
@@ -27,7 +32,7 @@ exports.signUpUser = (req,res,next) => {
       .then(user=>{
          if(user){
             userExpenses.sum('amount', { where: { 
-                date:{[Op.between]:[currentDate,moment().add(7,'days').format('YYYY-MM-DD')]}
+                date:{[Op.between]:[startWeek,endWeek]}
              } })
              .then(sumationOfWeekExpense => {
                 if(sumationOfWeekExpense){
@@ -43,7 +48,7 @@ exports.signUpUser = (req,res,next) => {
              })
     //////////////////////////////////////////////////////////////////////////////////
              userExpenses.sum('amount', { where: {  
-                date:{[Op.between]:[currentDate,moment().add(30,'days').format('YYYY-MM-DD')]}
+                date:{[Op.between]:[startMonth,endMonth]}
              } })
              .then(sumationOfMonthExpense => {
                 if(sumationOfMonthExpense){
@@ -198,7 +203,7 @@ exports.updateExpense=(req,res,next)=>{
             const error = new Error('Could not find Expense');
             error.statusCode = 404;
             throw error;
-        }
+        } 
      return userExpenses.update({
             amount: amount,
             description : description,
@@ -208,7 +213,7 @@ exports.updateExpense=(req,res,next)=>{
           .then(() => {
             res
             .status(200)
-            .json({message:"expense Updated"})  
+            .json({message:"Expense Updated"})  
           }) 
         })
         .catch(err=>{
@@ -245,6 +250,8 @@ exports.deleteExpense=(req,res,next)=>{
 
 exports.getExpensesBasedOnDuration=(req,res,next)=>{
      const duration = req.body.duration
+     const startDate = req.body.startDate
+     const endDate  = req.body.endDate
      const today = new Date();
      const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
  
@@ -274,7 +281,7 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
          case "week":
          userExpenses.findAll({
              attributes: ['id','amount','description','expenseCategory','date'],  
-             where:{userId:req.userId,date:{[Op.between]:[currentDate,moment().add(7,'days').format('YYYY-MM-DD')]}}
+             where:{userId:req.userId,date:{[Op.between]:[startDate,endDate]}}
          })  
          .then(expenses=>{
              res.status(200).json(expenses);
@@ -289,7 +296,7 @@ exports.getExpensesBasedOnDuration=(req,res,next)=>{
          case "month":
          userExpenses.findAll({
             attributes: ['id','amount','description','expenseCategory','date'],
-            where:{userId:req.userId,date:{[Op.between]:[currentDate,moment().add(30,'days').format('YYYY-MM-DD')]}
+            where:{userId:req.userId,date:{[Op.between]:[startDate,endDate]}
            }
         })  
         .then(expenses=>{

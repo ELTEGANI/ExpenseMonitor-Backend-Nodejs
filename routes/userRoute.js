@@ -8,7 +8,11 @@ const isAuth = require('../authenticationMiddleware/middleware');
 router.post('/registeruser',[
         body('username').trim().not().isEmpty(),
         body('emailaddress').trim().not().isEmpty(),
-        body('gender').trim().not().isEmpty()   
+        body('gender').trim().not().isEmpty(), 
+        body('startWeek').trim().not().isEmpty(),
+        body('endWeek').trim().not().isEmpty() ,
+        body('startMonth').trim().not().isEmpty(),
+        body('endMonth').trim().not().isEmpty()  
        ],userController.signUpUser);
 
 router.post('/createexpense',isAuth,[
@@ -30,7 +34,9 @@ router.put('/updateexpense/:expenseid',isAuth,[
 router.delete('/deleteexpense/:expenseid',isAuth,userController.deleteExpense)
 
 router.post('/getExpensesBasedOnDuration',isAuth,[
-         body('duration').trim().not().isEmpty()
+         body('duration').trim(),
+         body('startDate').trim(),
+         body('endDate').trim()
 ]
 ,userController.getExpensesBasedOnDuration)
 module.exports = router;
