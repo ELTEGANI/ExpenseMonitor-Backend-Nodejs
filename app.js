@@ -1,9 +1,7 @@
 const express    = require('express');
-const sequelize  = require('./config/configration');
 const bodyParser = require('body-parser');
-const Users = require('./models/users');
-const userExpenses = require('./models/userExpenses');
 const helmet = require('helmet')
+require('dotenv').config()
 
 //set routes
 const userRoute = require('./routes/userRoute');
@@ -29,26 +27,19 @@ app.use('/User',userRoute);
 
 app.use((error,req,res,next)=>{
     console.log(error);
-    const status  = error.statusCode || 5000;
+    const status  = error.statusCode || 500;
     const message = error.message;
     const data = error.data;
     res.status(status).json({
     message:message,
     data:data
-    });         
+    });           
 })
 
-userExpenses.belongsTo(Users);
-Users.hasMany(userExpenses);
+app.listen(process.env.PORT || 5000,() => {
+    console.log(`Server is Listening To Port ${process.env.PORT}`)
+})
 
- 
-sequelize  
-       .sync()       
-      .then(result =>{   
-      console.log(result);  
-      app.listen(process.env.PORT || 5000); 
-}).catch(err =>{
-      console.log(err)
-})   
+   
 
 

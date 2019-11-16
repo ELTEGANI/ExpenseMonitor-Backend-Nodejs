@@ -11,7 +11,7 @@ module.exports =(req,res,next)=>{
    const token = authHeader.split(' ')[1];
    let decodedtoken;
    try{
-   decodedtoken = jwt.verify(token,'expensemon');
+   decodedtoken = jwt.verify(token,process.env.JWT_SEC);
    }catch(err){
        err.statusCode = 500;
        throw err;
@@ -21,7 +21,6 @@ module.exports =(req,res,next)=>{
        error.statusCode = 401;
        throw error;
    }         
-
    req.userId = decodedtoken.userId;
    next();
 }
