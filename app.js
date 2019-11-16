@@ -5,6 +5,7 @@ require('dotenv').config()
 
 //set routes
 const userRoute = require('./routes/userRoute');
+const expenseRoute = require('./routes/expenseRoute');
 
 //init express
 const app = express()
@@ -23,7 +24,8 @@ app.use((req, res, next) => {
 
 
 
-app.use('/User',userRoute);
+app.use('/api/user',userRoute);
+app.use('/api/expense',expenseRoute);
 
 app.use((error,req,res,next)=>{
     console.log(error);
