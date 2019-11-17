@@ -62,8 +62,9 @@ module.exports = {
            else{
                 /////////////////weekExpense/////////////////                
             try{
-                const sumationOfWeekExpense= await userExpenses.sum('amount', { where: { 
-                    date:{[Op.between]:[startWeek,endWeek]}
+                const sumationOfWeekExpense= await userExpenses.sum('amount', { where: 
+                 { 
+                    userId:user.id,date:{[Op.between]:[startWeek,endWeek]}
                  } 
                 })
                     if(sumationOfWeekExpense){
@@ -79,9 +80,12 @@ module.exports = {
             }
         /////////////////monthExpense/////////////////                
         try{
-            const sumationOfMonthExpense= await userExpenses.sum('amount', { where: {  
-                            date:{[Op.between]:[startMonth,endMonth]}
-                         } })
+            const sumationOfMonthExpense= await userExpenses.sum('amount', { where: 
+                         {  
+                            userId:user.id,date:{[Op.between]:[startMonth,endMonth]}
+                         } 
+                        }
+                        )
                 if(sumationOfMonthExpense){
                     monthExpense = sumationOfMonthExpense
                 }else{
