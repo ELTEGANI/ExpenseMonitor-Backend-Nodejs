@@ -42,7 +42,7 @@ module.exports = {
                             }else{
                                 currentExpense = 0
                             }
-                            const token = jwt.sign({ id: result.id }, process.env.JWT_SEC);
+                            const token = jwt.sign({ userId: result.id }, process.env.JWT_SEC);
                             res
                             .status(200)
                             .json({
@@ -146,7 +146,6 @@ module.exports = {
         const expenseCategory  = req.body.category;
         let today = new Date();
         let currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-
         try{
             const resultUserExpenses = await userExpenses.create({
                 amount:amount,

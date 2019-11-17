@@ -21,11 +21,10 @@ module.exports = (Sequelize, DataTypes) => {
     },
     currency: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true,
     },
     userId:{
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.UUID,
     },
     date: {
       type: DataTypes.DATEONLY,
@@ -33,7 +32,7 @@ module.exports = (Sequelize, DataTypes) => {
     },
   }, {});
   userExpenses.associate = function(models) {
-    // associations can be defined here
+    userExpenses.belongsTo(models.Users,{foreignKey:'userId',targetKey:'id'})
   };
   return userExpenses;
 };
