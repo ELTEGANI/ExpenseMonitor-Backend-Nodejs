@@ -1,38 +1,39 @@
-'use strict';
+
 module.exports = (Sequelize, DataTypes) => {
   const userExpenses = Sequelize.define('userExpenses', {
-    id:{
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
-        primaryKey: true,
-        allowNull: false
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV1,
+      primaryKey: true,
+      allowNull: false,
     },
     amount: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-    expenseCategory:{
+    expenseCategory: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     currency: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    userId:{
+    userId: {
       type: DataTypes.UUID,
     },
     date: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: false,
     },
   }, {});
-  userExpenses.associate = function(models) {
-    userExpenses.belongsTo(models.Users,{foreignKey:'userId',targetKey:'id'})
+  // eslint-disable-next-line func-names
+  userExpenses.associate = function (models) {
+    userExpenses.belongsTo(models.Users, { foreignKey: 'userId', targetKey: 'id' });
   };
   return userExpenses;
 };

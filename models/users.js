@@ -1,31 +1,32 @@
-'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const Users = sequelize.define('Users', {
-     id:{
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV1,
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
     },
     userName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-    emailAddress:{
+    emailAddress: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-    gender:{
+    gender: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     currency: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
   }, {});
-  Users.associate = function(models) {
-    Users.hasMany(models.userExpenses,{foreignKey:'userId',targetKey:'id'})
+  // eslint-disable-next-line func-names
+  Users.associate = function (models) {
+    Users.hasMany(models.userExpenses, { foreignKey: 'userId', targetKey: 'id' });
   };
   return Users;
 };
