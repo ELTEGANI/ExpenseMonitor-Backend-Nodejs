@@ -76,10 +76,8 @@ module.exports = {
         // ///////////////monthExpense/////////////////
         try {
           const sumationOfMonthExpense = await userExpenses.sum('amount', {
-            where:
-                         {
-                           userId: user.id, date: { [Op.between]: [startMonth, endMonth],currency:currency },
-                         },
+          where:
+         {userId: user.id, date: { [Op.between]: [startMonth, endMonth]},currency:currency},
           });
           if (sumationOfMonthExpense) {
             monthExpense = sumationOfMonthExpense;
@@ -107,7 +105,7 @@ module.exports = {
           }
           const token = jwt.sign({ userId: user.id }, process.env.JWT_SEC);
           res
-            .status(200)
+            .status(201)
             .json({
               accessToken: token,
               userCurrentExpense: currentExpense,

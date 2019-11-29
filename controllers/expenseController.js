@@ -22,22 +22,18 @@ module.exports = {
     const {category} = req.body;
     const today = new Date();
     const currentDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-   
-      console.log('before create');
-      const resultUserExpenses = await userExpenses.create({
+    const resultUserExpenses = await userExpenses.create({
         amount:amount,   
         description:description,
         expenseCategory:category,
         currency:currency,
         date:date,
-        userId: req.userId});
-        console.log('before after');
-        const amountUserExpenses = await userExpenses.sum('amount', {
-          where: {
-            userId: resultUserExpenses.userId, date: currentDate,currency:currency
-          },
+        userId: req.userId
         });
-       return res.status(201).json({
+        const amountUserExpenses = await userExpenses.sum('amount', {
+          where:{userId:resultUserExpenses.userId,date:currentDate,currency:currency},
+        });
+        return res.status(201).json({
         message: 'Expense Created Successfully',
         Expense: amountUserExpenses,
       });
@@ -89,7 +85,7 @@ module.exports = {
         try {
           const weekExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate],currency:currency } },
+            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency},
           });
           res.status(200).json(weekExpenses);
         } catch (err) {
@@ -104,7 +100,7 @@ module.exports = {
         try {
           const monthExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate],currency:currency } },
+            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency },
           });
           res.status(200).json(monthExpenses);
         } catch (err) {
@@ -188,5 +184,4 @@ module.exports = {
       next(err);
     }
   },
-
 };
