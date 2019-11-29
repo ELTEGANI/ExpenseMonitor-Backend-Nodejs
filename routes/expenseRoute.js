@@ -26,6 +26,7 @@ router.delete('/deleteexpense/:expenseId', isAuth, expenseController.deleteExpen
 
 router.post('/getExpensesBasedOnDuration', isAuth, [
   body('duration').trim(),
+  body('currency').trim(),
   body('startDate').trim(),
   body('endDate').trim(),
 ],

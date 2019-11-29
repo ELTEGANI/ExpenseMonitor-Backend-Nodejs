@@ -6,14 +6,14 @@ require('dotenv').config();
 
 module.exports = {
   async signUpUser(req, res, next) {
-    const { userName } = req.body;
-    const { emailAddress } = req.body;
-    const { gender } = req.body;
-    const { currency } = req.body;
-    const { startWeek } = req.body;
-    const { endWeek } = req.body;
-    const { startMonth } = req.body;
-    const { endMonth } = req.body;
+    const  userName  = req.body.userName;
+    const  emailAddress  = req.body.emailAddress;
+    const  gender  = req.body.gender;
+    const  currency  = req.body.currency;
+    const  startWeek  = req.body.startWeek;
+    const  endWeek  = req.body.endWeek;
+    const  startMonth  = req.body.startMonth;
+    const  endMonth  = req.body.endMonth;
 
     let currentExpense = null;
     let weekExpense = null;
@@ -32,7 +32,7 @@ module.exports = {
             currency:currency,
           });
           const amountsum = await userExpenses
-            .sum('amount', { where: { userId: result.id, date: currentDate } });
+            .sum('amount', { where: { userId: result.id, date: currentDate,currency:currency } });
           if (amountsum) {
             currentExpense = amountsum;
           } else {
@@ -59,7 +59,7 @@ module.exports = {
           const sumationOfWeekExpense = await userExpenses.sum('amount', {
             where:
                  {
-                   userId: user.id, date: { [Op.between]: [startWeek, endWeek] },
+                   userId: user.id, date: { [Op.between]: [startWeek, endWeek],currency:currency },
                  },
           });
           if (sumationOfWeekExpense) {
@@ -78,7 +78,7 @@ module.exports = {
           const sumationOfMonthExpense = await userExpenses.sum('amount', {
             where:
                          {
-                           userId: user.id, date: { [Op.between]: [startMonth, endMonth] },
+                           userId: user.id, date: { [Op.between]: [startMonth, endMonth],currency:currency },
                          },
           });
           if (sumationOfMonthExpense) {
@@ -97,7 +97,7 @@ module.exports = {
           const sumationOfWeekExpense = await userExpenses.sum('amount', {
             where:
                 {
-                  userId: user.id, date: currentDate,
+                  userId: user.id, date: currentDate,currency:currency
                 },
           });
           if (sumationOfWeekExpense) {

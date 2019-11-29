@@ -7,6 +7,7 @@ require('dotenv').config();
 
 module.exports = {
   async createExpense(req, res, next) {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const error = new Error('validation Failed');
@@ -21,30 +22,26 @@ module.exports = {
     const {category} = req.body;
     const today = new Date();
     const currentDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-    try {
+   
+      console.log('before create');
       const resultUserExpenses = await userExpenses.create({
-        amount:amount,
+        amount:amount,   
         description:description,
         expenseCategory:category,
         currency:currency,
         date:date,
         userId: req.userId});
-      try{
+        console.log('before after');
         const amountUserExpenses = await userExpenses.sum('amount', {
           where: {
-            userId: resultUserExpenses.userId, date: currentDate,
+            userId: resultUserExpenses.userId, date: currentDate,currency:currency
           },
         });
        return res.status(201).json({
         message: 'Expense Created Successfully',
         Expense: amountUserExpenses,
       });
-      } catch (error) {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    }
+      
     } catch (error) {
       if (!error.statusCode) {
         error.statusCode = 500;
@@ -55,6 +52,7 @@ module.exports = {
 
   async getExpensesBasedOnDuration(req, res, next) {
     const { duration } = req.body;
+    const {currency } = req.body;
     const { startDate } = req.body;
     const { endDate } = req.body;
     const today = new Date();
@@ -73,7 +71,7 @@ module.exports = {
         try {
           const todayExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: currentDate },
+            where: { userId: req.userId, date: currentDate ,currency:currency},
           });
           res
             .status(200)
@@ -91,7 +89,7 @@ module.exports = {
         try {
           const weekExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate] } },
+            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate],currency:currency } },
           });
           res.status(200).json(weekExpenses);
         } catch (err) {
@@ -106,7 +104,7 @@ module.exports = {
         try {
           const monthExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate] } },
+            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate],currency:currency } },
           });
           res.status(200).json(monthExpenses);
         } catch (err) {
