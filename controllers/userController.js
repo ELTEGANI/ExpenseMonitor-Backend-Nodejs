@@ -59,7 +59,7 @@ module.exports = {
           const sumationOfWeekExpense = await userExpenses.sum('amount', {
             where:
                  {
-                   userId: user.id, date: { [Op.between]: [startWeek, endWeek],currency:currency },
+                   userId: user.id, date: { [Op.between]: [startWeek, endWeek]},currency:currency
                  },
           });
           if (sumationOfWeekExpense) {

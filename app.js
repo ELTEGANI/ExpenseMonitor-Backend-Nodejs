@@ -36,8 +36,12 @@ app.use((error, req, res, next) => {
   });
 });
 
-const server = app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log(`Server is Listening To Port ${process.env.PORT}`);
 });
 
-module.exports = server;
+// const server = app.listen(process.env.PORT || 5000, () => {
+//   console.log(`Server is Listening To Port ${process.env.PORT}`);
+// });
+
+// module.exports = server;

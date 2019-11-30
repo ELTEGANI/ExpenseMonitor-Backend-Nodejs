@@ -56,14 +56,6 @@ module.exports = {
 
     switch (duration) {
       case 'today':
-        // const errors = validationResult(req);
-        // if (!errors.isEmpty()) {
-        //   const error = new Error('validation Failed');
-        //   error.statusCode = 422;
-        //   error.data = errors.array();
-        //   throw error;
-        // }
-
         try {
           const todayExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
