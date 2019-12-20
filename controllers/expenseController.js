@@ -33,7 +33,7 @@ module.exports = {
         const amountUserExpenses = await userExpenses.sum('amount', {
           where:{userId:resultUserExpenses.userId,date:currentDate,currency:currency},
         });
-        return res.status(201).json({
+        res.status(201).json({
         message: 'Expense Created Successfully',
         Expense: amountUserExpenses,
       });
