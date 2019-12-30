@@ -22,7 +22,6 @@ module.exports = {
     const { currency } = req.body;
     const {category} = req.body;
     const today = new Date();
-    const currentDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
     const resultUserExpenses = await userExpenses.create({
         amount:amount,   
         description:description,
@@ -50,7 +49,6 @@ module.exports = {
     const { endDate } = req.body;
     const today = new Date();
     const currentDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-    let totalMonthExpenses = 0
 
     switch (duration) {
       
@@ -61,14 +59,9 @@ module.exports = {
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: { userId: req.userId, date: currentDate ,currency:currency},
           }); 
-          await Promise.all(
-            durationExpenses.map(async(item)=>{
-              totalMonthExpenses += Number(item.amount)
-          })
-          ) 
             res
               .status(200)
-              .json({totalMonthExpenses,durationExpenses});
+              .json(durationExpenses);
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
@@ -84,14 +77,9 @@ module.exports = {
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: {userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency},
           });
-          await Promise.all(
-            durationExpenses.map(async(item)=>{
-              totalMonthExpenses += Number(item.amount)
-          })
-          ) 
               res
               .status(200)
-              .json({totalMonthExpenses,durationExpenses});
+              .json(durationExpenses);
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
@@ -106,14 +94,9 @@ module.exports = {
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency },
           });
-          await Promise.all(
-            durationExpenses.map(async(item)=>{
-              totalMonthExpenses += Number(item.amount)
-          })
-          ) 
               res
               .status(200)
-              .json({totalMonthExpenses,durationExpenses});
+              .json(durationExpenses);
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
