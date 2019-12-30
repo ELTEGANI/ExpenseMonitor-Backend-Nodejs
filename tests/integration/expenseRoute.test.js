@@ -3,13 +3,11 @@ const jwt = require('jsonwebtoken');
 let server;
 let token;
 const expenseId = "5d318d20-127a-11ea-9f0d-e9cfc3307469"
-
-
    
 
 beforeEach(()=>{
   server = require('../../app');
-  token = jwt.sign({ userId: "d1058960-0d05-11ea-8787-9743ba10bf5f" }, process.env.JWT_SEC)
+  token = jwt.sign({ userId: "1e287ed0-2a1d-11ea-9ea8-51b1bfa11499" }, process.env.JWT_SEC)
   // await userExpenses.destroy({
   //   where: {},
   //   truncate: true
@@ -42,12 +40,11 @@ afterEach(()=>{
 //        .send({
 //         amount:"4000",   
 //         description:"fees test", 
-//         date:"2019-11-29",
-//         userId:"d1058960-0d05-11ea-8787-9743ba10bf5f",
+//         date:"2019-12-30",
+//         userId:"1e287ed0-2a1d-11ea-9ea8-51b1bfa11499",
 //         category:"gas",
 //         currency:"SDG",
 //         })
-//         expect(res.body.Expense).toBe(20000);
 //         expect(res.body.message).toBe("Expense Created Successfully");      
 //         expect(res.status).toBe(201);
 // });
@@ -63,20 +60,20 @@ afterEach(()=>{
 // });
 
 
-// test('should return expenses based on dueation ',async() => {
-//   const res = await request(server)
-//   .post('/api/expense/getExpensesBasedOnDuration')
-//   .set('Authorization', `Bearer ${token}`)
-//   .send({
-//         duration:"week",
-//         currency:"SDG",
-//         startDate:"2019-11-23",
-//         endDate:"2019-11-29"
-//    })
-//    expect(res.status).toBe(200);
-//    expect(res.body.length).toBe(0)
-// });
-
+test('should return expenses based on duration ',async() => {
+  const res = await request(server)
+  .post('/api/expense/getExpensesBasedOnDuration')
+  .set('Authorization', `Bearer ${token}`)
+  .send({
+        duration:"month",
+        currency:"SDG",
+        startDate:"2019-12-01",
+        endDate:"2019-12-30"
+   })
+   expect(res.status).toBe(200);
+   expect(res.body.totalMonthExpenses).toBe(4000);
+});
+ 
 
 // test('should not delete expense if no token provided',async() => {
 //   const res = await request(server)

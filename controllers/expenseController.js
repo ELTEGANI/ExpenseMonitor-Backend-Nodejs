@@ -2,6 +2,7 @@
 const { validationResult } = require('express-validator/check');
 const { Op } = require('sequelize');
 const { userExpenses } = require('../models');
+const sequelize = require('sequelize');
 require('dotenv').config();
 
 
@@ -30,12 +31,8 @@ module.exports = {
         date:date,
         userId: req.userId
         });
-        const amountUserExpenses = await userExpenses.sum('amount', {
-          where:{userId:resultUserExpenses.userId,date:currentDate,currency:currency},
-        });
         res.status(201).json({
         message: 'Expense Created Successfully',
-        Expense: amountUserExpenses,
       });
       
     } catch (error) {
@@ -57,13 +54,20 @@ module.exports = {
     switch (duration) {
       case 'today':
         try {
-          const todayExpenses = await userExpenses.findAll({
+          let totalTodayExpenses = 0
+          const todayExpenses = await userExpenses.
+          findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: { userId: req.userId, date: currentDate ,currency:currency},
-          });
-          res
-            .status(200)
-            .json(todayExpenses);
+          }); 
+          await Promise.all(
+            todayExpenses.map(async(item)=>{
+              totalTodayExpenses += Number(item.amount)
+          })
+          ) 
+            res
+              .status(200)
+              .json({totalTodayExpenses,todayExpenses});
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
@@ -75,11 +79,19 @@ module.exports = {
 
       case 'week':
         try {
+          let totalWeekExpenses = 0
           const weekExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency},
+            where: {userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency},
           });
-          res.status(200).json(weekExpenses);
+          await Promise.all(
+            weekExpenses.map(async(item)=>{
+              totalWeekExpenses += Number(item.amount)
+          })
+          ) 
+              res
+              .status(200)
+              .json({totalWeekExpenses,weekExpenses});
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
@@ -90,11 +102,19 @@ module.exports = {
 
       case 'month':
         try {
+          let totalMonthExpenses =0
           const monthExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency },
           });
-          res.status(200).json(monthExpenses);
+          await Promise.all(
+            monthExpenses.map(async(item)=>{
+              totalMonthExpenses += Number(item.amount)
+          })
+          ) 
+              res
+              .status(200)
+              .json({totalMonthExpenses,monthExpenses});
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
@@ -124,8 +144,7 @@ module.exports = {
       res
         .status(200)
         .json({
-          message: 'expense Deleted',
-          expenseDeleted: deleted,
+          message: 'expense Deleted'
         });
     } catch (err) {
       if (!err.statusCode) {
@@ -166,8 +185,7 @@ module.exports = {
       res
         .status(200)
         .json({
-          message: 'Expense Updated',
-          updatedExpense,
+          message: 'Expense Updated'
         });
     } catch (err) {
       if (!err.statusCode) {

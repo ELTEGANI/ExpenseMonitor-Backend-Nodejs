@@ -21,23 +21,14 @@ afterEach(()=>{
 })
   
 
-// test('should signup new user and return its expenses if found',async() => {
-//    const res = await request(server).post('/api/user/registeruser').send({
-//       userName:"adnani jaber",
-//       emailAddress:"adnanimoh@gmail.com",
-//       gender:"male",
-//       currency:"SDG", 
-//       startWeek:"2019-11-23", 
-//       endWeek:"2019-11-28",
-//       startMonth:"2019-11-01",
-//       endMonth:"2019-11-30"
-//     })
-//     expect(res.status).toBe(201);
-//     expect(res.body).toMatchObject({
-//       "userCurrentExpense":16000,
-//       "weekExpense":0,
-//       "monthExpense":16000,
-//     })
-// });
+test('should signup new user if not found and return accesstoken',async() => {
+   const res = await request(server).post('/api/user/registeruser').send({
+      userName:"adnani jaber",
+      emailAddress:"adnanimoh@gmail.com",
+      gender:"male",
+      currency:"SDG"
+    })
+    expect(res.status).toBe(201);
+});
 
 
