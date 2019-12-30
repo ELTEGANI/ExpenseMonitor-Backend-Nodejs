@@ -50,24 +50,25 @@ module.exports = {
     const { endDate } = req.body;
     const today = new Date();
     const currentDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+    let totalMonthExpenses = 0
 
     switch (duration) {
+      
       case 'today':
         try {
-          let totalTodayExpenses = 0
-          const todayExpenses = await userExpenses.
+          const durationExpenses = await userExpenses.
           findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: { userId: req.userId, date: currentDate ,currency:currency},
           }); 
           await Promise.all(
-            todayExpenses.map(async(item)=>{
-              totalTodayExpenses += Number(item.amount)
+            durationExpenses.map(async(item)=>{
+              totalMonthExpenses += Number(item.amount)
           })
           ) 
             res
               .status(200)
-              .json({totalTodayExpenses,todayExpenses});
+              .json({totalMonthExpenses,durationExpenses});
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
@@ -79,19 +80,18 @@ module.exports = {
 
       case 'week':
         try {
-          let totalWeekExpenses = 0
-          const weekExpenses = await userExpenses.findAll({
+          const durationExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: {userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency},
           });
           await Promise.all(
-            weekExpenses.map(async(item)=>{
-              totalWeekExpenses += Number(item.amount)
+            durationExpenses.map(async(item)=>{
+              totalMonthExpenses += Number(item.amount)
           })
           ) 
               res
               .status(200)
-              .json({totalWeekExpenses,weekExpenses});
+              .json({totalMonthExpenses,durationExpenses});
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
@@ -102,19 +102,18 @@ module.exports = {
 
       case 'month':
         try {
-          let totalMonthExpenses =0
-          const monthExpenses = await userExpenses.findAll({
+          const durationExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
             where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency },
           });
           await Promise.all(
-            monthExpenses.map(async(item)=>{
+            durationExpenses.map(async(item)=>{
               totalMonthExpenses += Number(item.amount)
           })
           ) 
               res
               .status(200)
-              .json({totalMonthExpenses,monthExpenses});
+              .json({totalMonthExpenses,durationExpenses});
         } catch (err) {
           if (!err.statusCode) {
             err.statusCode = 500;
