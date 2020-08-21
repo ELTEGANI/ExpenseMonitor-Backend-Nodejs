@@ -32,6 +32,7 @@ module.exports = {
         });
         res.status(201).json({
         message: 'Expense Created Successfully',
+        expense:resultUserExpenses
       });
       
     } catch (error) {
@@ -42,40 +43,14 @@ module.exports = {
     }
   },
 
-  async getExpensesBasedOnDuration(req, res, next) {
-    const { duration } = req.body;
-    const {currency } = req.body;
+ 
+async getExpensesBasedOnDuration(req, res, next) {
     const { startDate } = req.body;
     const { endDate } = req.body;
-    const today = new Date();
-    const currentDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-
-    switch (duration) {
-      
-      case 'today':
-        try {
-          const durationExpenses = await userExpenses.
-          findAll({
-            attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: currentDate ,currency:currency},
-          }); 
-            res
-              .status(200)
-              .json(durationExpenses);
-        } catch (err) {
-          if (!err.statusCode) {
-            err.statusCode = 500;
-          }
-          next(err);
-        }
-        break;
-
-
-      case 'week':
         try {
           const durationExpenses = await userExpenses.findAll({
             attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: {userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency},
+            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]} },
           });
               res
               .status(200)
@@ -86,27 +61,9 @@ module.exports = {
           }
           next(err);
         }
-        break;
-
-      case 'month':
-        try {
-          const durationExpenses = await userExpenses.findAll({
-            attributes: ['id', 'amount', 'description', 'expenseCategory', 'currency', 'date'],
-            where: { userId: req.userId, date: { [Op.between]: [startDate, endDate]},currency:currency },
-          });
-              res
-              .status(200)
-              .json(durationExpenses);
-        } catch (err) {
-          if (!err.statusCode) {
-            err.statusCode = 500;
-          }
-          next(err);
-        }
-        break;
-    }
   },
 
+                
   async deleteExpense(req, res, next) {
     try {
       const expense = await userExpenses.findByPk(req.params.expenseId);
